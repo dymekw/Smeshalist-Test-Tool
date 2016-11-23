@@ -45,7 +45,7 @@ public class AddVerticesButton implements ActionListener {
 			int group = new Random().nextInt(maxGroup - minGroup + 1) + minGroup;
 
 			Point p = new Point(x, y, z);
-			Vertex v = new Vertex(getPoint3D(p), 0);
+			Vertex v = new Vertex(getPoint3D(p));
 			v.setGroupId(group);
 			v.setQuality(quality);
 			v.setLabel(gui.getSingleTab().getLabel());

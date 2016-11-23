@@ -59,7 +59,7 @@ public class AddButtonListener implements ActionListener {
 			break;
 		case VERTEX:
 			p = points.get(1);
-			Vertex v = new Vertex(getPoint3D(p), 0);
+			Vertex v = new Vertex(getPoint3D(p));
 			v.setGroupId(gui.getSingleTab().getGroup());
 			v.setQuality(gui.getSingleTab().getQuality());
 			v.setLabel(gui.getSingleTab().getLabel());
