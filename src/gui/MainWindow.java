@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import helpers.CoreNotRunningException;
 import logic.BreakpointButtonListener;
 import logic.FlushButtonListener;
 import logic.RenderButtonListener;
@@ -21,12 +22,12 @@ public class MainWindow extends JFrame implements GUI {
 	private BulkTab bulkTab;
 	private Smeshalist tool;
 
-	public static void main(String[] argv) {
-		MainWindow gui = new MainWindow();
+	public static void main(String[] argv) throws CoreNotRunningException {
+		new MainWindow();
 	}
 
-	public MainWindow() {
-		tool = Smeshalist.getInstance();
+	public MainWindow() throws CoreNotRunningException {
+		tool = Smeshalist.getInstance(false);
 		setTitle("Smeshalist Test Tool");
 		setSize(500, 500);
 		initView();

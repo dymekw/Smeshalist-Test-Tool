@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.GUI;
+import helpers.CoreNotRunningException;
 
 public class RenderButtonListener implements ActionListener {
 
@@ -15,7 +16,11 @@ public class RenderButtonListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		gui.getSmeshalist().render();
+		try {
+			gui.getSmeshalist().render();
+		} catch (CoreNotRunningException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
