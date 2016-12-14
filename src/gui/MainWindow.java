@@ -2,14 +2,20 @@ package gui;
 
 import java.awt.Button;
 import java.awt.Dimension;
+import java.util.Objects;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import helpers.CoreNotRunningException;
 import logic.BreakpointButtonListener;
+import logic.CleanButtonListener;
+import logic.ConnectButtonListener;
+import logic.DisconnectButtonListener;
 import logic.FlushButtonListener;
 import logic.RenderButtonListener;
 import tool.Smeshalist;
@@ -18,6 +24,13 @@ public class MainWindow extends JFrame implements GUI {
 	private static final long serialVersionUID = 1L;
 
 	private JTabbedPane tabbedPane = new JTabbedPane();
+	private JComboBox<Boolean> resetOptions;
+	private Button connect = new Button("Connect");
+	private Button disconnect = new Button("Disconnect");
+	private Button flush = new Button("Flush");
+	private Button render = new Button("Render");
+	private Button breakpoint = new Button("Breakpoint");
+	private Button clean = new Button("Clean");
 	private SingleTab singleTab;
 	private BulkTab bulkTab;
 	private Smeshalist tool;
@@ -27,7 +40,6 @@ public class MainWindow extends JFrame implements GUI {
 	}
 
 	public MainWindow() throws CoreNotRunningException {
-		tool = Smeshalist.getInstance(false);
 		setTitle("Smeshalist Test Tool");
 		setSize(500, 500);
 		initView();
@@ -65,25 +77,72 @@ public class MainWindow extends JFrame implements GUI {
 		JPanel result = new JPanel();
 		result.setLayout(new BoxLayout(result, BoxLayout.LINE_AXIS));
 
-		Button flush = new Button("Flush");
 		flush.addActionListener(new FlushButtonListener(this));
 
-		Button render = new Button("Render");
 		render.addActionListener(new RenderButtonListener(this));
 
-		Button breakpoint = new Button("Breakpoint");
 		breakpoint.addActionListener(new BreakpointButtonListener(this));
 
+		JPanel resetPanel = new JPanel();
+		resetPanel.setLayout(new BoxLayout(resetPanel, BoxLayout.Y_AXIS));
+
+		JLabel resetLabel = new JLabel("Hard reset");
+		resetPanel.add(resetLabel);
+
+		Boolean[] options = { Boolean.TRUE, Boolean.FALSE };
+		resetOptions = new JComboBox<>(options);
+		resetPanel.add(resetOptions);
+
+		JPanel connectionPanel = new JPanel();
+		connectionPanel.setLayout(new BoxLayout(connectionPanel, BoxLayout.Y_AXIS));
+
+		connectionPanel.add(connect);
+		connectionPanel.add(disconnect);
+
+		connect.addActionListener(new ConnectButtonListener(this));
+		disconnect.addActionListener(new DisconnectButtonListener(this));
+		disconnect.setEnabled(false);
+		clean.addActionListener(new CleanButtonListener(this));
+
+		result.add(resetPanel);
+		result.add(connectionPanel);
 		result.add(flush);
 		result.add(render);
 		result.add(breakpoint);
+		result.add(clean);
 
-		result.setMaximumSize(new Dimension(300, 150));
+		result.setMaximumSize(new Dimension(450, 150));
 		return result;
 	}
 
 	@Override
+	public void connectWithSmeshalist() {
+		Boolean option = (Boolean) resetOptions.getSelectedItem();
+		resetOptions.setEnabled(false);
+		connect.setEnabled(false);
+		disconnect.setEnabled(true);
+
+		try {
+			tool = Smeshalist.getInstance(option);
+		} catch (CoreNotRunningException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	public void disconnectWithSmeshalist() {
+		tool = null;
+
+		resetOptions.setEnabled(true);
+		connect.setEnabled(true);
+		disconnect.setEnabled(false);
+	}
+
+	@Override
 	public Smeshalist getSmeshalist() {
+		if (Objects.isNull(tool)) {
+			connectWithSmeshalist();
+		}
 		return tool;
 	}
 

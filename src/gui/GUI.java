@@ -8,4 +8,8 @@ public interface GUI {
 	BulkTab getBulkTab();
 
 	Smeshalist getSmeshalist();
+
+	void connectWithSmeshalist();
+
+	void disconnectWithSmeshalist();
 }
