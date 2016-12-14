@@ -131,6 +131,7 @@ public class MainWindow extends JFrame implements GUI {
 	}
 
 	public void disconnectWithSmeshalist() {
+		Smeshalist.destroySmeshalist();
 		tool = null;
 
 		resetOptions.setEnabled(true);
